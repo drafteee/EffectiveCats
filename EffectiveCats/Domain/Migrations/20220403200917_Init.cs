@@ -31,24 +31,23 @@ namespace Domain.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Image = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    TypeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TypeId1 = table.Column<long>(type: "INTEGER", nullable: false)
+                    TypeId = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cats_CatTypes_TypeId1",
-                        column: x => x.TypeId1,
+                        name: "FK_Cats_CatTypes_TypeId",
+                        column: x => x.TypeId,
                         principalTable: "CatTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cats_TypeId1",
+                name: "IX_Cats_TypeId",
                 table: "Cats",
-                column: "TypeId1");
+                column: "TypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -1,30 +1,48 @@
-﻿using Domain.Services;
+﻿using Common.MCat;
+using Common.MCat.Dto;
+using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EffectiveCats.Controllers
 {
     [Route("api/[controller]")]
-    public class CatController : Controller
+    [Authorize]
+    public class CatController : BaseController
     {
-        private readonly CatService _service;
-
-        public CatController(CatService service)
+        public CatController()
         {
-            _service = service;
+            
         }
 
-        [HttpGet("GetCat")]
-        public async Task<ActionResult<bool>> GetCat()
+        [HttpPost("create")]
+        public async Task<ActionResult<bool>> Create([FromForm] CreateCat.Command command)
         {
-            try
-            {
-                _service.GetAll();
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
+            return await Mediator.Send(command);
+        }
+
+        [HttpGet("getById")]
+        public async Task<ActionResult<GetByIdCatDto>> GetById([FromQuery] GetByIdCat.Request request)
+        {
+            return await Mediator.Send(request);
+        }
+
+        [HttpGet("getAll")]
+        public async Task<ActionResult<List<GetAllCatDto>>> GetAll([FromQuery] GetAllCat.Request request)
+        {
+            return await Mediator.Send(request);
+        }
+
+        [HttpPut("update")]
+        public async Task<ActionResult<Cat>> Update([FromForm] UpdateCat.Command command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpDelete("delete")]
+        public async Task<ActionResult<long>> Delete([FromQuery] DeleteCat.Command command)
+        {
+            return await Mediator.Send(command);
         }
     }
 }

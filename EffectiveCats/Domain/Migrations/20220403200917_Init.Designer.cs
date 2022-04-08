@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20220327194531_Init")]
+    [Migration("20220403200917_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace Domain.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
-            modelBuilder.Entity("Common.Cat", b =>
+            modelBuilder.Entity("Domain.Models.Cat", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,20 +37,17 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("TypeId1")
+                    b.Property<long>("TypeId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TypeId1");
+                    b.HasIndex("TypeId");
 
                     b.ToTable("Cats");
                 });
 
-            modelBuilder.Entity("Common.CatType", b =>
+            modelBuilder.Entity("Domain.Models.CatType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,18 +62,18 @@ namespace Domain.Migrations
                     b.ToTable("CatTypes");
                 });
 
-            modelBuilder.Entity("Common.Cat", b =>
+            modelBuilder.Entity("Domain.Models.Cat", b =>
                 {
-                    b.HasOne("Common.CatType", "Type")
+                    b.HasOne("Domain.Models.CatType", "Type")
                         .WithMany("Cats")
-                        .HasForeignKey("TypeId1")
+                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("Common.CatType", b =>
+            modelBuilder.Entity("Domain.Models.CatType", b =>
                 {
                     b.Navigation("Cats");
                 });

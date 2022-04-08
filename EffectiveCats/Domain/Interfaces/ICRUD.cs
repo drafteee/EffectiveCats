@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Interfaces
+﻿namespace Domain.Interfaces
 {
-    internal interface ICRUD<T>
+    public interface ICRUD<T>
         where T : class
     {
-        abstract Task<bool> Create(T entity);
-        abstract Task<T> Get(long id);
+        Task<bool> Create(T entity);
+        Task<T> Get(long id);
         Task<List<T>> GetAll();
         Task<T> Update(T entity);
-        Task<bool> Delete(long id);
+        Task<long> Delete(long id);
     }
 }

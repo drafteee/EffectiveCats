@@ -1,42 +1,50 @@
 ﻿using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services
 {
     public class CRUDService<T> : ICRUD<T>
-        where T : class
+        where T : class, IId
     {
-        public CRUDService()
+        private readonly DbContext _db;
+
+        public CRUDService(MainContext context)
         {
+            _db = context;
         }
 
-        public Task<bool> Create(T entity)
+        private GenericIdRepository<T> _repository;
+        public GenericIdRepository<T> Repository => _repository ?? (_repository = new GenericIdRepository<T>(_db));
+
+        public async Task<bool> Create(T entity)
         {
-            throw new NotImplementedException();
+            return await Repository.AddAndSaveAsync(entity);
         }
 
-        public Task<bool> Delete(long id)
+        public async Task<long> Delete(long id)
         {
-            throw new NotImplementedException();
+            return await Repository.DeleteByIdAsync(id);
         }
 
-        public Task<T> Get(long id)
+        public async Task<T> Get(long id)
         {
-            throw new NotImplementedException();
+            var entity = await Repository.GetByIdNoTrackingAsync(id);
+            if (entity == null) throw new KeyNotFoundException($"{typeof(T).Name} not found");
+            return entity;
         }
 
-        public Task<List<T>> GetAll()
+        public async Task<List<T>> GetAll()
         {
-            throw new NotImplementedException();
+            return await Repository.GetAllAsync();
         }
 
-        public Task<T> Update(T entity)
+        public async Task<T> Update(T entity)
         {
-            throw new NotImplementedException();
+            var newEntity = await Repository.EditByIdAsync(entity, entity.Id);
+            await Repository.SaveAsync();
+
+            return newEntity;
         }
     }
 }
