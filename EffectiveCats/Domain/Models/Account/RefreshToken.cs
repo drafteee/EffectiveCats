@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models.Account
 {
-    public class RefreshToken : IId
+    public class RefreshToken : IId<long>
     {
         public string Token { get; set; }
         public DateTime Expires { get; set; }

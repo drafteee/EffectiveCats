@@ -1,15 +1,16 @@
-﻿using Domain.Models.Account;
-using System.Linq.Expressions;
+﻿using Domain.Interfaces.Finders;
+using Domain.Interfaces.Repositories;
+using Domain.Models.Account;
 
 namespace Domain.Repositories
 {
-    public class UserRepository : GenericIdRepository<User>
+    public class UserRepository : BaseRepository<User, long>, IUserRepository
     {
-        public UserRepository(MainContext context) : base(context) { }
+        public UserRepository(MainContext context, IFinder<User, long> finder) : base(context, finder) { }
 
-        public bool Any(Expression<Func<User, bool>> predicate)
+        public bool TokenIsUnique(string jwtToken)
         {
-            return DbContext.Set<User>().Any(predicate);
+            return !DbContext.Any(u => u.RefreshTokens.Any(t => t.Token == jwtToken));
         }
     }
 }

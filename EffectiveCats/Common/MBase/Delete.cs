@@ -4,15 +4,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Common.MBase
 {
-    public interface IDeleteCommand : IRequest<long>
+    public interface IDeleteCommand<TId> : IRequest<TId>
     {
-        long Id { get; set; }
+        TId Id { get; set; }
     }
 
-    public class DeleteCommandHandler<TEntity, TCommand, TService> : IRequestHandler<TCommand, long>
+    public class DeleteCommandHandler<TEntity, TId, TCommand, TService> : IRequestHandler<TCommand, TId>
         where TEntity : class
-        where TCommand : IDeleteCommand
-        where TService : ICRUD<TEntity>
+        where TCommand : IDeleteCommand<TId>
+        where TService : ICRUD<TEntity, TId>
     {
         private readonly TService _service;
         private readonly ILogger _logger;
@@ -23,7 +23,7 @@ namespace Common.MBase
             _service = service;
         }
 
-        public async Task<long> Handle(TCommand command, CancellationToken cancellationToken)
+        public async Task<TId> Handle(TCommand command, CancellationToken cancellationToken)
         {
             try
             {

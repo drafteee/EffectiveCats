@@ -8,7 +8,7 @@ namespace Common.MTypeCat
 {
     public class DeleteCatType
     {
-        public class Command : IDeleteCommand
+        public class Command : IDeleteCommand<long>
         {
             public long Id { get ; set ; }
         }
@@ -20,9 +20,9 @@ namespace Common.MTypeCat
                 RuleFor(x => x.Id).NotEmpty();
             }
         }
-        public class Handler : DeleteCommandHandler<CatType, Command, ICRUD<CatType>>
+        public class Handler : DeleteCommandHandler<CatType, long, Command, ICRUD<CatType, long>>
         {
-            public Handler(ILogger<DeleteCatType> logger, ICRUD<CatType> service) : base(logger, service) { }
+            public Handler(ILogger<DeleteCatType> logger, ICRUD<CatType, long> service) : base(logger, service) { }
         }
     }
 }

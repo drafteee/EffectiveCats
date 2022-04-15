@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Models
 {
-    public class IId
+    public class IId<T> : Interfaces.IId<T>
+        where T : struct
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public long Id { get; set; }
+        public T Id { get; set; }
     }
 }

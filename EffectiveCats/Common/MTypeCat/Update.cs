@@ -8,14 +8,14 @@ namespace Common.MTypeCat
 {
     public class UpdateCatType
     {
-        public class Command : IUpdateCommand<CatType>
+        public class Command : IUpdateCommand<CatType, long>
         {
             public long Id { get; set; }
             public string? Name { get; set; }
         }
-        public class Handler : UpdateCommandHandler<CatType, Command, ICRUD<CatType>>
+        public class Handler : UpdateCommandHandler<CatType, long, Command, ICRUD<CatType, long>>
         {
-            public Handler(ILogger<UpdateCatType> logger, IMapper mapper, ICRUD<CatType> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<UpdateCatType> logger, IMapper mapper, ICRUD<CatType, long> service) : base(logger, mapper, service) { }
         }
     }
 }

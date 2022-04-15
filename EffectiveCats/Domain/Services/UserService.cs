@@ -5,27 +5,31 @@ using Domain.Repositories;
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using Microsoft.Extensions.Options;
-using BCrypt.Net;
 using Microsoft.AspNetCore.Identity;
+using Domain.Interfaces.Finders;
+using Domain.Interfaces.Repositories;
 
 namespace Domain.Services
 {
     public class UserService : IUserService
     {
+        private IFinder<User, long> _finder;
+        private IUserRepository _repository;
+        private IUnitOfWork _unitOfWork;
         private IJWTUtils _jwtUtils;
         private readonly JWTSettings _appSettings;
         private readonly UserManager<User> _userManager;
 
-        private UserRepository _repository;
-        public UserRepository Repository;
-
         public UserService(
-            MainContext context,
+            IFinder<User, long> finder, IUserRepository repository, IUnitOfWork unitofWork,
             IJWTUtils jwtUtils,
             IOptions<JWTSettings> appSettings,
             UserManager<User> userManager)
         {
-            Repository = new UserRepository(context);
+            _finder = finder;
+            _repository = repository;
+            _unitOfWork = unitofWork;
+
             _jwtUtils = jwtUtils;
             _appSettings = appSettings.Value;
             _userManager = userManager;
@@ -33,7 +37,7 @@ namespace Domain.Services
 
         public async Task<AuthenticateResponse> Authenticate(string userName, string password, string ipAddress)
         {
-            var user = await Repository.FindByFirstOrDefaultAsync(x => x.UserName == userName);
+            var user = await _finder.FirstOrDefaultAsync(x => x.UserName == userName);
             
             if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
                 throw new AppException("Username or password is incorrect");
@@ -43,7 +47,7 @@ namespace Domain.Services
             var tokenIsUnique = false;
 
             while(!tokenIsUnique)
-                tokenIsUnique = !Repository.Any(u => u.RefreshTokens.Any(t => t.Token == jwtToken));
+                tokenIsUnique = !_repository.TokenIsUnique(jwtToken);
 
             var refreshTokenString = _jwtUtils.GenerateRefreshToken();
 
@@ -59,8 +63,8 @@ namespace Domain.Services
 
             RemoveOldRefreshTokens(user);
 
-            await Repository.EditAndSaveAsync(user);
-
+            _repository.Edit(user);
+            _unitOfWork.Complete();
             return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
         }
 
@@ -72,7 +76,8 @@ namespace Domain.Services
             if (refreshToken.IsRevoked)
             {
                 RevokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {token}");
-                await Repository.EditAndSaveAsync(user);
+                _repository.Edit(user);
+                _unitOfWork.Complete();
             }
 
             if (!refreshToken.IsActive)
@@ -83,7 +88,8 @@ namespace Domain.Services
 
             RemoveOldRefreshTokens(user);
 
-            await Repository.EditAndSaveAsync(user);
+            _repository.Edit(user);
+            _unitOfWork.Complete();
 
             var jwtToken = _jwtUtils.GenerateJwtToken(user.Id.ToString());
 
@@ -99,19 +105,20 @@ namespace Domain.Services
                 throw new AppException("Invalid token");
 
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
-            await Repository.EditAndSaveAsync(user);
+            _repository.Edit(user);
+            _unitOfWork.Complete();
             return true;
         }
 
         public async Task<User> GetById(long id)
         {
-            var user = await Repository.FindByAsync(x=> x.Id == id);
+            var user = await _finder.FirstOrDefaultAsync(x=> x.Id == id);
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }
         private async Task<User> GetUserByRefreshToken(string token)
         {
-            var user = await Repository.FindByFirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = await _finder.FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
 
             if (user is null)
                 throw new AppException("Invalid token");

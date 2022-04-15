@@ -10,11 +10,11 @@ namespace Common.MBase
 
     }
 
-    public class ReadAllQueryHandler<TEntity, TQuery, TService, TEntityDto> : IRequestHandler<TQuery, List<TEntityDto>>
+    public class ReadAllQueryHandler<TEntity, TId, TQuery, TService, TEntityDto> : IRequestHandler<TQuery, List<TEntityDto>>
         where TEntity : class
         where TEntityDto : class
         where TQuery : IReadAll<TEntityDto>
-        where TService : ICRUD<TEntity>
+        where TService : ICRUD<TEntity, TId>
     {
         private readonly ILogger _logger;
         private readonly IMapper _mapper;

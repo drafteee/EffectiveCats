@@ -1,49 +1,54 @@
 ﻿using Domain.Interfaces;
+using Domain.Interfaces.Finders;
 using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services
 {
-    public class CRUDService<T> : ICRUD<T>
-        where T : class, IId
+    public class CRUDService<T, K> : ICRUD<T, K>
+        where T : class, IId<K>
     {
-        private readonly DbContext _db;
+        private readonly IFinder<T, K> _finder;
+        private IRepository<T, K> _repository;
+        private IUnitOfWork _unitofWork;
 
-        public CRUDService(MainContext context)
+        public CRUDService(IFinder<T, K> finder, IRepository<T,K> repository, IUnitOfWork unitofWork)
         {
-            _db = context;
+            _finder = finder;
+            _repository = repository;
+            _unitofWork = unitofWork;
         }
 
-        private GenericIdRepository<T> _repository;
-        public GenericIdRepository<T> Repository => _repository ?? (_repository = new GenericIdRepository<T>(_db));
 
-        public async Task<bool> Create(T entity)
+        public async Task<K> Create(T entity)
         {
-            return await Repository.AddAndSaveAsync(entity);
+            _repository.Add(entity);
+            _unitofWork.Complete();
+            return entity.Id;
         }
 
-        public async Task<long> Delete(long id)
+        public async Task<K> Delete(K id)
         {
-            return await Repository.DeleteByIdAsync(id);
+            var deletedId = await _repository.DeleteByIdAsync(id);
+            _unitofWork.Complete();
+            return deletedId;
         }
 
-        public async Task<T> Get(long id)
+        public async Task<T> Get(K id)
         {
-            var entity = await Repository.GetByIdNoTrackingAsync(id);
+            var entity = await _finder.GetByIdNoTrackingAsync(id);
             if (entity == null) throw new KeyNotFoundException($"{typeof(T).Name} not found");
             return entity;
         }
 
-        public async Task<List<T>> GetAll()
+        public Task<List<T>> GetAll()
         {
-            return await Repository.GetAllAsync();
+            return _finder.GetAllAsync();
         }
 
         public async Task<T> Update(T entity)
         {
-            var newEntity = await Repository.EditByIdAsync(entity, entity.Id);
-            await Repository.SaveAsync();
-
+            var newEntity = await _repository.EditByIdAsync(entity, entity.Id);
+            _unitofWork.Complete();
             return newEntity;
         }
     }

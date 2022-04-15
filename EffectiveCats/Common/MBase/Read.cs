@@ -9,16 +9,16 @@ namespace Common.MBase
     /// Need to Add pagination
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IReadQuery<TEntityDto> : IRequest<TEntityDto> where TEntityDto : class
+    public interface IReadQuery<TEntityDto, TId> : IRequest<TEntityDto> where TEntityDto : class
     {
-        long Id { get; set; }
+        TId Id { get; set; }
     }
 
-    public class ReadQueryHandler<TEntity, TQuery, TService, TEntityDto> : IRequestHandler<TQuery, TEntityDto>
+    public class ReadQueryHandler<TEntity, TId, TQuery, TService, TEntityDto> : IRequestHandler<TQuery, TEntityDto>
         where TEntity : class
         where TEntityDto : class
-        where TQuery : IReadQuery<TEntityDto>
-        where TService : ICRUD<TEntity>
+        where TQuery : IReadQuery<TEntityDto, TId>
+        where TService : ICRUD<TEntity, TId>
     {
         private readonly ILogger _logger;
         private readonly TService _service;

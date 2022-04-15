@@ -10,7 +10,7 @@ namespace Common.MCat
 {
     public class CreateCat 
     {
-        public class Command : ICreateCommand
+        public class Command : ICreateCommand<long>
         {
             public string Name { get; set; }
             public string Description { get; set; }
@@ -26,9 +26,9 @@ namespace Common.MCat
             }
         }
 
-        public class Handler : CreateCommandHandler<Cat, Command, ICRUD<Cat>>
+        public class Handler : CreateCommandHandler<Cat, long, Command, ICRUD<Cat, long>>
         {
-            public Handler(ILogger<CreateCat> logger, IMapper mapper, ICRUD<Cat> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<CreateCat> logger, IMapper mapper, ICRUD<Cat, long> service) : base(logger, mapper, service) { }
         }
     }
 }

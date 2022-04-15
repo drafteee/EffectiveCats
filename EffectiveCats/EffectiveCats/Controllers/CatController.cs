@@ -16,7 +16,7 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<bool>> Create([FromForm] CreateCat.Command command)
+        public async Task<ActionResult<long>> Create([FromForm] CreateCat.Command command)
         {
             return await Mediator.Send(command);
         }

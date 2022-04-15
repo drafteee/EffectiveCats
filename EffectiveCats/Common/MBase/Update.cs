@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Common.MBase
 {
-    public interface IUpdateCommand<TEntity> : IRequest<TEntity> where TEntity : class
+    public interface IUpdateCommand<TEntity, TId> : IRequest<TEntity> where TEntity : class
     {
-        long Id { get; set; }
+        TId Id { get; set; }
     }
 
-    public class UpdateCommandHandler<TEntity, TCommand, TService> : IRequestHandler<TCommand, TEntity>
+    public class UpdateCommandHandler<TEntity, TId, TCommand, TService> : IRequestHandler<TCommand, TEntity>
         where TEntity : class
-        where TCommand : IUpdateCommand<TEntity>
-        where TService : ICRUD<TEntity>
+        where TCommand : IUpdateCommand<TEntity, TId>
+        where TService : ICRUD<TEntity, TId>
     {
         private readonly ILogger _logger;
         private readonly IMapper _mapper;

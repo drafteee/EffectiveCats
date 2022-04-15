@@ -2,20 +2,15 @@
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.MBase
 {
-    public interface ICreateCommand : IRequest<bool> { }
+    public interface ICreateCommand<TId> : IRequest<TId> { }
 
-    public class CreateCommandHandler<TEntity, TCommand, TService> : IRequestHandler<TCommand, bool>
+    public class CreateCommandHandler<TEntity, TId, TCommand, TService> : IRequestHandler<TCommand, TId>
         where TEntity : class
-        where TCommand : ICreateCommand
-        where TService : ICRUD<TEntity>
+        where TCommand : ICreateCommand<TId>
+        where TService : ICRUD<TEntity, TId>
     {
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -28,7 +23,7 @@ namespace Common.MBase
             _service = service;
         }
 
-        public virtual async Task<bool> Handle(TCommand command, CancellationToken cancellationToken)
+        public virtual Task<TId> Handle(TCommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -36,7 +31,7 @@ namespace Common.MBase
 
                 var entity = _mapper.Map<TCommand, TEntity>(command);
 
-                return await _service.Create(entity);
+                return _service.Create(entity);
             }
             catch (Exception e)
             {

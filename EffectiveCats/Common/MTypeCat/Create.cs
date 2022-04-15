@@ -9,7 +9,7 @@ namespace Common.MTypeCat
 {
     public class CreateCatType
     {
-        public class Command : ICreateCommand
+        public class Command : ICreateCommand<long>
         {
             public string Name { get; set; }
         }
@@ -22,9 +22,9 @@ namespace Common.MTypeCat
             }
         }
 
-        public class Handler : CreateCommandHandler<CatType, Command, ICRUD<CatType>>
+        public class Handler : CreateCommandHandler<CatType, long, Command, ICRUD<CatType, long>>
         {
-            public Handler(ILogger<CreateCatType> logger, IMapper mapper, ICRUD<CatType> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<CreateCatType> logger, IMapper mapper, ICRUD<CatType, long> service) : base(logger, mapper, service) { }
         }
     }
 }

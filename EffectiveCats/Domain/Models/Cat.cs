@@ -1,8 +1,6 @@
-﻿using Domain.Interfaces;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
-    public class Cat : IId, Interfaces.IId
+    public class Cat : IId<long>
     {
         public string Name { get; set; }
         public string Description { get; set; }

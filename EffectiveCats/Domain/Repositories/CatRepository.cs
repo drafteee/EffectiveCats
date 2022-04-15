@@ -1,9 +1,11 @@
-﻿using Domain.Models;
+﻿using Domain.Interfaces.Finders;
+using Domain.Interfaces.Repositories;
+using Domain.Models;
 
 namespace Domain.Repositories
 {
-    public class CatRepository : GenericIdRepository<Cat>
+    public class CatRepository : BaseRepository<Cat, long>, ICatRepository
     {
-        public CatRepository(MainContext context) : base(context) { }
+        public CatRepository(MainContext context, IFinder<Cat, long> finder) : base(context, finder) { }
     }
 }

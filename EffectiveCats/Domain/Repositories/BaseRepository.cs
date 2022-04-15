@@ -1,69 +1,28 @@
-﻿using Domain.Exceptions;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
+using Domain.Interfaces.Finders;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Entity.Core.Objects;
 using System.Linq.Expressions;
 
 namespace Domain.Repositories
 {
-    public class GenericIdRepository<T> : IDisposable where T : class, IId
+    public class BaseRepository<T, K> : IRepository<T, K>
+        where T : class, IId<K>
     {
-        private readonly DbContext _dbContext;
+        private readonly MainContext _dbContext;
+        private readonly IFinder<T, K> _finder;
 
-        protected DbContext DbContext => _dbContext;
+        protected DbSet<T> DbContext => _dbContext.Set<T>();
 
-        public GenericIdRepository(DbContext context)
+        public BaseRepository(MainContext context, IFinder<T, K> finder)
         {
             _dbContext = context;
+            _finder = finder;
         }
 
-        public async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbContext.Set<T>().Where(predicate).FirstOrDefaultAsync<T>();
-        }
-
-        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)
-        {
-            return _dbContext.Set<T>().Where(predicate);
-        }
-
-        public async Task<T> FindByFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbContext.Set<T>().Where(predicate).FirstOrDefaultAsync();
-        }
-
-        public IQueryable<T> FindAll()
-        {
-            return _dbContext.Set<T>().AsNoTracking();
-        }
-
-        public async Task<T> GetByIdAsync(long id)
-        {
-            return await _dbContext.Set<T>().FirstOrDefaultAsync(r => r.Id == id);
-        }
-
-        public async Task<T> GetByIdNoTrackingAsync(long id)
-        {
-            return await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
-        }
-
-        public async Task<List<T>> GetAllAsync()
-        {
-            return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
-        }
-
-        public async Task<T> EditAndSaveAsync(T entity)
+        public T Edit(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
-
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
             return entity;
         }
 
@@ -75,23 +34,23 @@ namespace Domain.Repositories
         /// <param name="entity"> Сущность, в которой находятся свойства для их корректировки </param>
         /// <param name="id"> Id сущности, которую нужно скорректировать </param>
         /// <param name="properties"> Необязательный список свойств, которые подлежат корректировке </param>
-        public async Task<T> EditByIdAsync(T entity, long id, List<Expression<Func<T, object>>> properties = null)
+        public async Task<T> EditByIdAsync(T entity, K id, List<string> properties = null)
         {
-            var entityBd = await GetByIdAsync(id);
+            var entityBd = await _finder.GetByIdAsync(id);
             if (entityBd == null)
-                throw new KeyNotFoundException($"NotFound {typeof(T).Name}  Id={id}");
+                throw new KeyNotFoundException($"NotFound {typeof(T).Name} Id={id}");
 
             var entityType = typeof(T);
             if (properties != null)
                 foreach (var property in properties)
                 {
-                    var propertyName = (property.Body as MemberExpression ?? (MemberExpression)((UnaryExpression)property.Body).Operand).Member.Name;
-                    var propertyInfo = entityType.GetProperty(propertyName);
+                    var propertyInfo = entityType.GetProperty(property);
                     var value = propertyInfo?.GetValue(entity, null);
                     var valueBd = propertyInfo?.GetValue(entityBd, null);
                     if ((value != null && !value.Equals(valueBd)) || (valueBd != null && !valueBd.Equals(value)))
                     {
                         propertyInfo.SetValue(entityBd, value, null);
+                        _dbContext.Entry(entityBd).Property(property).IsModified = true;
                     }
                 }
             else
@@ -112,24 +71,27 @@ namespace Domain.Repositories
                     if (value != null && propertyInfo.PropertyType.IsArray && ((Array)value).Length > 0)
                     {
                         propertyInfo.SetValue(entityBd, value, null);
+                        _dbContext.Entry(entityBd).Property(propertyInfo.Name).IsModified = true;
+
                         continue;
                     }
 
                     if (value != null && (!value.Equals(valueBd) || !valueBd.Equals(value)))
                     {
                         propertyInfo.SetValue(entityBd, value, null);
+                        _dbContext.Entry(entityBd).Property(propertyInfo.Name).IsModified = true;
                     }
                 }
             }
             return entityBd;
         }
 
-        public virtual async Task<long> DeleteByIdAsync(long id)
+        public async Task<K> DeleteByIdAsync(K id)
         {
-            var entity = await GetByIdAsync(id);
+            var entity = await _finder.GetByIdAsync(id);
             if (entity == null)
                 throw new KeyNotFoundException($"Not found {typeof(T).Name} Id={id}");
-            return await DeleteAndSaveAsync(entity);
+            return Delete(entity);
         }
 
         public void Add(T entity)
@@ -141,55 +103,10 @@ namespace Domain.Repositories
             _dbContext.Set<T>().AddRange(entities);
         }
 
-        /// <summary>
-        /// Добавляет к контексту и сохраняет в БД
-        /// </summary>
-        /// <param name="entity"> Cущность </param>
-        public virtual async Task<bool> AddAndSaveAsync(T entity)
-        {
-            _dbContext.Set<T>().Add(entity);
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-            return true;
-        }
-
-        public async Task<long> DeleteAndSaveAsync(T entity)
+        public K Delete(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Deleted;
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
             return entity.Id;
-        }
-
-        public async Task<bool> SaveAsync()
-        {
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-            return true;
-        }
-
-        public void Dispose()
-        {
-            _dbContext.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

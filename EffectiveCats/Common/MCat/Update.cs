@@ -9,7 +9,7 @@ namespace Common.MCat
 {
     public class UpdateCat
     {
-        public class Command : IUpdateCommand<Cat>
+        public class Command : IUpdateCommand<Cat, long>
         {
             public long Id { get; set; }
             public string? Name { get; set; }
@@ -18,9 +18,9 @@ namespace Common.MCat
             public int? TypeId { get; set; }
         }
 
-        public class Handler : UpdateCommandHandler<Cat, Command, ICRUD<Cat>>
+        public class Handler : UpdateCommandHandler<Cat, long, Command, ICRUD<Cat, long>>
         {
-            public Handler(ILogger<UpdateCat> logger, IMapper mapper, ICRUD<Cat> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<UpdateCat> logger, IMapper mapper, ICRUD<Cat, long> service) : base(logger, mapper, service) { }
         }
     }
 }

@@ -11,9 +11,9 @@ namespace Common.MCat
     {
         public class Request : IReadAll<GetAllCatDto> { }
 
-        public class Handler : ReadAllQueryHandler<Cat, Request, ICRUD<Cat>, GetAllCatDto>
+        public class Handler : ReadAllQueryHandler<Cat, long, Request, ICRUD<Cat, long>, GetAllCatDto>
         {
-            public Handler(ILogger<GetAllCat> logger, IMapper mapper, ICRUD<Cat> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<GetAllCat> logger, IMapper mapper, ICRUD<Cat, long> service) : base(logger, mapper, service) { }
         }
     }
 }

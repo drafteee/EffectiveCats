@@ -10,7 +10,7 @@ namespace Common.MTypeCat
 {
     public class GetByIdCatType
     {
-        public class Request : IReadQuery<GetByIdTypeCatDto>
+        public class Request : IReadQuery<GetByIdTypeCatDto, long>
         {
             public long Id { get; set; }
         }
@@ -23,9 +23,9 @@ namespace Common.MTypeCat
             }
         }
 
-        public class Handler : ReadQueryHandler<CatType, Request, ICRUD<CatType>, GetByIdTypeCatDto>
+        public class Handler : ReadQueryHandler<CatType, long, Request, ICRUD<CatType, long>, GetByIdTypeCatDto>
         {
-            public Handler(ILogger<GetByIdCatType> logger, IMapper mapper, ICRUD<CatType> service) : base(logger, mapper, service) { }
+            public Handler(ILogger<GetByIdCatType> logger, IMapper mapper, ICRUD<CatType, long> service) : base(logger, mapper, service) { }
         }
     }
 }
