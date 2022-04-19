@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MCat\n1sb5x24.msv~" />
+    <None Remove="Cat\n1sb5x24.msv~" />
   </ItemGroup>
 
   <ItemGroup>
