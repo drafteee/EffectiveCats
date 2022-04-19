@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Interfaces;
+using BL.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

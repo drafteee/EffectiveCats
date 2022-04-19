@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Models.Account;
+using DAL.Models.Account;
 
 namespace Common.Account
 {

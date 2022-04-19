@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Domain.Exceptions;
-using Domain.Interfaces;
-using Domain.Models.Account;
+using BL.Exceptions;
+using DAL.Models.Account;
 using FluentValidation;
 using Infrastructure;
 using MediatR;

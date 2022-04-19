@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using BL.Interfaces;
 using Common.MBase;
 using Common.MCat.Dto;
-using Domain.Interfaces;
-using Domain.Models;
+using DAL.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 

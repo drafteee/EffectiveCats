@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Common.MTypeCat.Dto;
-using Domain.Models;
+using DAL.Models;
 
 namespace Common.MTypeCat
 {

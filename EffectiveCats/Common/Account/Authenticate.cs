@@ -1,5 +1,5 @@
-﻿using Domain.Interfaces;
-using Domain.Models.Account;
+﻿using BL.Interfaces;
+using DAL.Models.Account;
 using FluentValidation;
 using Infrastructure;
 using MediatR;
@@ -37,12 +37,12 @@ namespace Common.Account
                 _accessor = accessor;
             }
 
-            public async Task<AuthenticateResponse> Handle(Command command, CancellationToken cancellationToken)
+            public Task<AuthenticateResponse> Handle(Command command, CancellationToken cancellationToken)
             {
                 try
                 {
                     _logger.LogInformation($"Authentication {command.UserName} [{DateTime.Now}]");
-                    return await _service.Authenticate(command.UserName, command.Password, _accessor.GetCurrentUserIp());
+                    return _service.Authenticate(command.UserName, command.Password, _accessor.GetCurrentUserIp());
                 }
                 catch (Exception e)
                 {

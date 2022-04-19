@@ -1,19 +1,16 @@
-﻿using Domain.Interfaces;
-using Domain.Interfaces.Finders;
-using Domain.Repositories;
+﻿using DAL.Interfaces;
+using Domain.Interfaces;
 
 namespace Domain.Services
 {
     public class CRUDService<T, K> : ICRUD<T, K>
-        where T : class, IId<K>
+        where T : class, DAL.Interfaces.IId<K>
     {
-        private readonly IFinder<T, K> _finder;
         private IRepository<T, K> _repository;
         private IUnitOfWork _unitofWork;
 
-        public CRUDService(IFinder<T, K> finder, IRepository<T,K> repository, IUnitOfWork unitofWork)
+        public CRUDService(IRepository<T,K> repository, IUnitOfWork unitofWork)
         {
-            _finder = finder;
             _repository = repository;
             _unitofWork = unitofWork;
         }

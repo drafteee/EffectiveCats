@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Domain.Interfaces.Finders;
 using Domain.Interfaces.Repositories;
+using Infrastructure;
 
 namespace Domain.Services
 {
@@ -19,12 +20,14 @@ namespace Domain.Services
         private IJWTUtils _jwtUtils;
         private readonly JWTSettings _appSettings;
         private readonly UserManager<User> _userManager;
+        private readonly UserAccessor _userAccessor;
 
         public UserService(
             IFinder<User, long> finder, IUserRepository repository, IUnitOfWork unitofWork,
             IJWTUtils jwtUtils,
             IOptions<JWTSettings> appSettings,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            UserAccessor userAccessor)
         {
             _finder = finder;
             _repository = repository;
@@ -33,6 +36,7 @@ namespace Domain.Services
             _jwtUtils = jwtUtils;
             _appSettings = appSettings.Value;
             _userManager = userManager;
+            _userAccessor = userAccessor;
         }
 
         public async Task<AuthenticateResponse> Authenticate(string userName, string password, string ipAddress)
@@ -43,6 +47,7 @@ namespace Domain.Services
                 throw new AppException("Username or password is incorrect");
 
             var jwtToken = _jwtUtils.GenerateJwtToken(user.Id.ToString());
+            _userAccessor.SetToken(jwtToken);
 
             var tokenIsUnique = false;
 
@@ -92,7 +97,7 @@ namespace Domain.Services
             _unitOfWork.Complete();
 
             var jwtToken = _jwtUtils.GenerateJwtToken(user.Id.ToString());
-
+            _userAccessor.SetToken(jwtToken);
             return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
         }
 
@@ -110,12 +115,7 @@ namespace Domain.Services
             return true;
         }
 
-        public async Task<User> GetById(long id)
-        {
-            var user = await _finder.FirstOrDefaultAsync(x=> x.Id == id);
-            if (user == null) throw new KeyNotFoundException("User not found");
-            return user;
-        }
+
         private async Task<User> GetUserByRefreshToken(string token)
         {
             var user = await _finder.FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace Infrastructure
 {
@@ -13,5 +12,6 @@ namespace Infrastructure
 
         public string GetCurrentUserId() => _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == "id")?.Value;
         public string GetCurrentUserIp() => _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+        public void SetToken(string jwtToken) => _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", "Bearer " + jwtToken);
     }
 }

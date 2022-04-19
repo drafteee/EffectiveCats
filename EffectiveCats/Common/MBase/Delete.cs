@@ -1,4 +1,4 @@
-﻿using Domain.Interfaces;
+﻿using BL.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -23,13 +23,13 @@ namespace Common.MBase
             _service = service;
         }
 
-        public async Task<TId> Handle(TCommand command, CancellationToken cancellationToken)
+        public Task<TId> Handle(TCommand command, CancellationToken cancellationToken)
         {
             try
             {
                 _logger.LogInformation($"DeleteM {typeof(TEntity).Name} [{DateTime.Now}]");
 
-                return await _service.Delete(command.Id);
+                return _service.Delete(command.Id);
             }
             catch (Exception e)
             {

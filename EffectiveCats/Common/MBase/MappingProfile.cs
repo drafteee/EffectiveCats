@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Common.MCat;
 using Common.MTypeCat;
-using Domain.Models;
-using Microsoft.AspNetCore.Http;
+using DAL.Models;
 
 namespace Common.MBase
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Interfaces;
+using BL.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +26,7 @@ namespace Common.MBase
             _mapper = mapper;
         }
 
-        public async Task<TEntity> Handle(TCommand command, CancellationToken cancellationToken)
+        public Task<TEntity> Handle(TCommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Common.MBase
 
                 var entity = _mapper.Map<TCommand, TEntity>(command);
 
-                return await _service.Update(entity);
+                return _service.Update(entity);
             }
             catch (Exception e)
             {

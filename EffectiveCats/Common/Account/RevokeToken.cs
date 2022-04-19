@@ -1,4 +1,4 @@
-﻿using Domain.Interfaces;
+﻿using BL.Interfaces;
 using FluentValidation;
 using Infrastructure;
 using MediatR;

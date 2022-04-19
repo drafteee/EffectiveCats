@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Common.MCat.Dto;
-using Domain.Models;
+using DAL.Models;
 
 namespace Common.MCat
 {

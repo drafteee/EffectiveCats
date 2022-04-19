@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using BL.Interfaces;
 using Common.MBase;
-using Domain.Interfaces;
-using Domain.Models;
+using DAL.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

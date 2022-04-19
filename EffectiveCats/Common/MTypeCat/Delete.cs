@@ -1,6 +1,6 @@
-﻿using Common.MBase;
-using Domain.Interfaces;
-using Domain.Models;
+﻿using BL.Interfaces;
+using Common.MBase;
+using DAL.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
