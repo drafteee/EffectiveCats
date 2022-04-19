@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using BL.Interfaces;
-using Common.MBase;
+using BL.Services;
 using DAL.Models;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Common.MTypeCat
 {
     public class CreateCatType
     {
-        public class Command : ICreateCommand<long>
+        public class Command : IRequest<long>
         {
             public string Name { get; set; }
         }
@@ -22,9 +22,36 @@ namespace Common.MTypeCat
             }
         }
 
-        public class Handler : CreateCommandHandler<CatType, long, Command, ICRUD<CatType, long>>
+        public class Handler : IRequestHandler<Command, long>
         {
-            public Handler(ILogger<CreateCatType> logger, IMapper mapper, ICRUD<CatType, long> service) : base(logger, mapper, service) { }
+            private readonly IMapper _mapper;
+            private readonly ILogger<CreateCatType> _logger;
+            private readonly ICatTypeService _service;
+
+            public Handler(ILogger<CreateCatType> logger, IMapper mapper, ICatTypeService service)
+            {
+                _logger = logger;
+                _mapper = mapper;
+                _service = service;
+            }
+
+            public async Task<long> Handle(Command command, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    _logger.LogInformation($"CreateM CatType [{DateTime.Now}]");
+
+                    var entity = _mapper.Map<Command, CatType>(command);
+                    await _service.Create(entity);
+                    return entity.Id;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation($"CreateM error CatType [{DateTime.Now}]");
+
+                    throw e;
+                }
+            }
         }
     }
 }

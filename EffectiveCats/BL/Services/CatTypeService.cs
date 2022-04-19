@@ -1,49 +1,55 @@
-﻿using BL.Interfaces;
+﻿using BL.Exceptions;
 using DAL.Interfaces;
 using DAL.Interfaces.Finders;
-using DAL.Interfaces.Repositories;
 using DAL.Models;
 
 namespace BL.Services
 {
-    public class CatTypeService : ICRUD<CatType, long>
+    public class CatTypeService : ICatTypeService
     {
         private ICatTypeFinder _finder;
-        private ICatTypeRepository _repository;
+        private IRepository<CatType> _repository;
         private IUnitOfWork _unitOfWork;
 
-        public CatTypeService(ICatTypeFinder finder, ICatTypeRepository repository, IUnitOfWork unitofWork)
+        public CatTypeService(ICatTypeFinder finder, IRepository<CatType> repository, IUnitOfWork unitofWork)
         {
             _finder = finder;
             _repository = repository;
             _unitOfWork = unitofWork;
         }
 
-        public async Task<long> Create(CatType entity)
+        public Task<int> Create(CatType entity)
         {
             _repository.Add(entity);
-            await _unitOfWork.Complete();
-            return entity.Id;
+            return _unitOfWork.Complete();
         }
 
-        public Task<long> Delete(long id)
+        public async Task<int> Delete(long id)
         {
-            return _repository.DeleteByIdAsync(id);
+            var entity = await _finder.GetById(id);
+            if (entity != null)
+            {
+                _repository.Delete(entity);
+                return await _unitOfWork.Complete();
+            }
+
+            throw new AppException($"Not found CatType id={id}");
         }
 
         public Task<CatType?> Get(long id)
         {
-            return _finder.GetAsync(x => x.Id == id);
+            return _finder.GetById(id);
         }
 
         public Task<List<CatType>> GetAll()
         {
-            return _finder.GetAllAsync();
+            return _finder.GetAll();
         }
 
-        public Task<CatType> Update(CatType entity)
+        public Task<int> Update(CatType entity)
         {
-            return _repository.EditByIdAsync(entity, entity.Id);
+            _repository.Edit(entity);
+            return _unitOfWork.Complete();
         }
     }
 }

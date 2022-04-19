@@ -9,6 +9,7 @@ var assembly = AppDomain.CurrentDomain.Load("Common");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MainContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")))
+    
                 .AddSwagger()
                 .AddMvc(setup =>
                 {

@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using BL.Interfaces;
-using Common.MBase;
+using BL.Exceptions;
+using BL.Services;
 using Common.MTypeCat.Dto;
 using DAL.Models;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Common.MTypeCat
 {
     public class GetByIdCatType
     {
-        public class Request : IReadQuery<GetByIdTypeCatDto, long>
+        public class Request : IRequest<GetByIdTypeCatDto>
         {
             public long Id { get; set; }
         }
@@ -23,9 +24,39 @@ namespace Common.MTypeCat
             }
         }
 
-        public class Handler : ReadQueryHandler<CatType, long, Request, ICRUD<CatType, long>, GetByIdTypeCatDto>
+        public class Handler : IRequestHandler<Request, GetByIdTypeCatDto>
         {
-            public Handler(ILogger<GetByIdCatType> logger, IMapper mapper, ICRUD<CatType, long> service) : base(logger, mapper, service) { }
+            private readonly ILogger<GetByIdCatType> _logger;
+            private readonly ICatTypeService _service;
+            private readonly IMapper _mapper;
+
+            public Handler(ILogger<GetByIdCatType> logger, IMapper mapper, ICatTypeService service)
+            {
+                _logger = logger;
+                _service = service;
+                _mapper = mapper;
+            }
+
+            public async Task<GetByIdTypeCatDto> Handle(Request request, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    _logger.LogInformation($"ReadM CatType [{DateTime.Now}]");
+
+                    var entity = await _service.Get(request.Id);
+                    if(entity == null)
+                    {
+                        throw new AppException($"Not found CatType id={request.Id}");
+                    }
+                    return _mapper.Map<CatType, GetByIdTypeCatDto>(entity);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation($"ReadM error CatType [{DateTime.Now}]");
+
+                    throw e;
+                }
+            }
         }
     }
 }

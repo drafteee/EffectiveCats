@@ -1,49 +1,57 @@
-﻿using BL.Interfaces;
+﻿using BL.Exceptions;
+using BL.Services;
 using DAL.Interfaces;
 using DAL.Interfaces.Finders;
-using DAL.Interfaces.Repositories;
 using DAL.Models;
 
 namespace Domain.Services
 {
-    public class CatService : ICRUD<Cat, long>
+    public class CatService : ICatService
     {
         private ICatFinder _finder;
-        private ICatRepository _repository;
+        private IRepository<Cat> _repository;
         private IUnitOfWork _unitOfWork;
 
-        public CatService(ICatFinder finder, ICatRepository repository, IUnitOfWork unitofWork)
+        public CatService(ICatFinder finder, IRepository<Cat> repository, IUnitOfWork unitofWork)
         {
             _finder = finder;
             _repository = repository;
             _unitOfWork = unitofWork;
         }
 
-        public async Task<long> Create(Cat entity)
+        public Task<int> Create(Cat entity)
         {
             _repository.Add(entity);
-            await _unitOfWork.Complete();
-            return entity.Id;
+            return _unitOfWork.Complete();
         }
 
-        public Task<long> Delete(long id)
+        public async Task<int> Delete(long id)
         {
-            return _repository.DeleteByIdAsync(id);
+            var entity = await _finder.GetById(id);
+            if (entity != null)
+            {
+                _repository.Delete(entity);
+                return await _unitOfWork.Complete();
+            }
+
+            throw new AppException($"Not found Cat id={id}");
         }
 
         public Task<Cat?> Get(long id)
         {
-            return _finder.GetAsync(x=> x.Id == id);
+            return _finder.GetById(id);
         }
 
         public Task<List<Cat>> GetAll()
         {
-            return _finder.GetAllAsync();
+            return _finder.GetAll();
         }
 
-        public Task<Cat> Update(Cat entity)
+        public Task<int> Update(Cat entity)
         {
-            return _repository.EditByIdAsync(entity, entity.Id);
+            _repository.Edit(entity);
+
+            return _unitOfWork.Complete();
         }
     }
 }

@@ -2,7 +2,6 @@
 using DAL.Models;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Domain.Finders
 {
@@ -15,14 +14,14 @@ namespace Domain.Finders
             _dbSet = context.CatTypes;
         }
 
-        public Task<List<CatType>> GetAllAsync()
+        public Task<List<CatType>> GetAll()
         {
             return _dbSet.ToListAsync();
         }
 
-        public Task<CatType?> GetAsync(Expression<Func<CatType, bool>> condition)
+        public Task<CatType?> GetById(long id)
         {
-            return _dbSet.FirstOrDefaultAsync(condition);
+            return _dbSet.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

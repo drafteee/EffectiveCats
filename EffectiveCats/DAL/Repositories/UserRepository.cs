@@ -1,13 +1,6 @@
-﻿using DAL.Interfaces.Finders;
-using DAL.Interfaces.Repositories;
-using DAL.Models.Account;
-
-namespace DAL.Repositories
+﻿namespace DAL.Repositories
 {
-    public class UserRepository : BaseRepository<User, long>, IUserRepository
+    public class UserRepository
     {
-        public UserRepository(MainContext context) : base(context) { }
-
-
     }
 }

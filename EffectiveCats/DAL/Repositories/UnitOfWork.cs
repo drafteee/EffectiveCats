@@ -9,13 +9,10 @@ namespace DAL.Repositories
         {
             _context = context;
         }
+        //Transactiobn
         public Task<int> Complete()
         {
             return _context.SaveChangesAsync();
-        }
-        public void Dispose()
-        {
-            _context.Dispose();
         }
     }
 }

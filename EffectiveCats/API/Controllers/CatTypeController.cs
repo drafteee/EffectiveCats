@@ -37,13 +37,13 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpPut("update")]
-        public ActionResult<Task<CatType>> Update([FromForm] UpdateCatType.Command command)
+        public ActionResult<Task<bool>> Update([FromForm] UpdateCatType.Command command)
         {
             return _mediator.Send(command);
         }
 
         [HttpDelete("delete")]
-        public ActionResult<Task<long>> Delete([FromQuery] DeleteCatType.Command command)
+        public ActionResult<Task<bool>> Delete([FromQuery] DeleteCatType.Command command)
         {
             return _mediator.Send(command);
         }

@@ -15,7 +15,7 @@ namespace Domain.Services
     public class UserService : IUserService
     {
         private IUserFinder _finder;
-        private IUserRepository _repository;
+        private IRepository<User> _repository;
         private IUnitOfWork _unitOfWork;
         private IJWTUtils _jwtUtils;
         private readonly JWTSettings _appSettings;
@@ -23,7 +23,7 @@ namespace Domain.Services
         private readonly UserAccessor _userAccessor;
 
         public UserService(
-            IUserFinder finder, IUserRepository repository, IUnitOfWork unitofWork,
+            IUserFinder finder, IRepository<User> repository, IUnitOfWork unitofWork,
             IJWTUtils jwtUtils,
             IOptions<JWTSettings> appSettings,
             UserManager<User> userManager,
@@ -41,7 +41,7 @@ namespace Domain.Services
 
         public async Task<AuthenticateResponse> Authenticate(string userName, string password, string ipAddress)
         {
-            var user = await _finder.GetAsync(x => x.UserName == userName);
+            var user = await _finder.GetByName(userName);
             
             if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
                 throw new AppException("Username or password is incorrect");
@@ -75,7 +75,7 @@ namespace Domain.Services
 
         public async Task<AuthenticateResponse> RefreshToken(long id, string ipAddress)
         {
-            var user = await _finder.GetAsync(x => x.Id == id);
+            var user = await _finder.GetById(id);
             if (user == null) throw new KeyNotFoundException("User not found");
 
             var refreshToken = user.RefreshTokens.FirstOrDefault(x => x.Id == id && x.IsActive);
@@ -127,7 +127,7 @@ namespace Domain.Services
 
         private async Task<User> GetUserByRefreshToken(string token)
         {
-            var user = await _finder.GetAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = await _finder.GetByRefreshToken(token);
 
             if (user is null)
                 throw new AppException("Invalid token");

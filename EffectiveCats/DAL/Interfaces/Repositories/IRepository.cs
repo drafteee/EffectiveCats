@@ -2,13 +2,11 @@
 
 namespace DAL.Interfaces
 {
-    public interface IRepository<T, K>
+    public interface IRepository<T>
     {
-        T Edit(T entity);
-        Task<T> EditByIdAsync(T entity, K id, List<string> properties = null);
-        Task<K> DeleteByIdAsync(K id);
+        void Edit(T entity);
         void Add(T entity);
         void AddRange(IEnumerable<T> entities);
-        K Delete(T entity);
+        void Delete(T entity);
     }
 }

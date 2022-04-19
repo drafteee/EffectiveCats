@@ -15,14 +15,23 @@ namespace Domain.Finders
             _dbSet = context.Users;
         }
 
-        public Task<List<User>> GetAllAsync()
+        public Task<List<User>> GetAll()
         {
             return _dbSet.ToListAsync();
         }
 
-        public Task<User?> GetAsync(Expression<Func<User, bool>> condition)
+        public Task<User?> GetByName(string userName)
         {
-            return _dbSet.FirstOrDefaultAsync(condition);
+            return _dbSet.FirstOrDefaultAsync(x=> x.UserName == userName);
+        }
+        public Task<User?> GetById(long id)
+        {
+            return _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public Task<User?> GetByRefreshToken(string token)
+        {
+            return _dbSet.FirstOrDefaultAsync(x => x.RefreshTokens.Any(t => t.Token == token));
         }
 
         public bool TokenIsUnique(string jwtToken)

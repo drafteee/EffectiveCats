@@ -10,6 +10,8 @@ namespace Common.MTypeCat
         {
             CreateMap<CatType, GetByIdTypeCatDto>();
             CreateMap<CatType, GetAllTypeCatDto>();
+            CreateMap<CreateCatType.Command, CatType>();
+            CreateMap<UpdateCatType.Command, CatType>();
         }
     }
 }
