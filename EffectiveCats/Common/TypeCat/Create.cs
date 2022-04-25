@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using BL.Services;
-using DAL.Models;
+using Domain.Models;
 using FluentValidation;
-using MediatR;
+using MediatR.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Common.MTypeCat
+namespace MediatR.MTypeCat
 {
     public class CreateCatType
     {

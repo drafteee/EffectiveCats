@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Domain.Services
+namespace BL.Services
 {
     public static class Extensions
     {

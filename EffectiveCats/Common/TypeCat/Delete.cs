@@ -1,9 +1,8 @@
-﻿using BL.Services;
-using FluentValidation;
-using MediatR;
+﻿using FluentValidation;
+using MediatR.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Common.MTypeCat
+namespace MediatR.MTypeCat
 {
     public class DeleteCatType
     {

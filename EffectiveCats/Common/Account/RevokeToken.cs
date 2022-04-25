@@ -1,10 +1,9 @@
-﻿using BL.Interfaces;
-using FluentValidation;
+﻿using FluentValidation;
 using Infrastructure;
-using MediatR;
+using MediatR.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Common.Account
+namespace MediatR.Account
 {
     public class RevokeToken
     {

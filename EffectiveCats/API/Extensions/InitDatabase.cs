@@ -1,6 +1,6 @@
-﻿using DAL.Models.Account;
-using DAL.Repositories;
+﻿using Domain.Models.Account;
 using Microsoft.AspNetCore.Identity;
+using SQLiteDAL.Repositories;
 
 namespace EffectiveCats.Extensions
 {

@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using Common.MCat.Dto;
-using DAL.Models;
+using MediatR.Cat.Responses;
+using Models = Domain.Models;
 
-namespace Common.MCat
+namespace MediatR.MCat
 {
     class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<Cat, GetByIdCatDto>();
-            CreateMap<Cat, GetAllCatDto>();
-            CreateMap<UpdateCat.Command, Cat>()
+            CreateMap<Models.Cat, GetByIdCatResponse>();
+            CreateMap<Models.Cat, GetAllCatResponse>();
+            CreateMap<UpdateCat.Command, Models.Cat>()
                 .ForMember(d => d.Image, opt => opt.MapFrom((source, dest) => {
                     var stream = new MemoryStream();
                     if (source.Image != null)
@@ -20,7 +20,7 @@ namespace Common.MCat
                     }
                     return null;
                 }));
-            CreateMap<CreateCat.Command, Cat>()
+            CreateMap<CreateCat.Command, Models.Cat>()
                 .ForMember(d => d.Image, opt => opt.MapFrom((source, dest) => {
                     var stream = new MemoryStream();
                     source.Image.CopyTo(stream);

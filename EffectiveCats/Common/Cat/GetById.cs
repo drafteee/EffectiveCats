@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
-using BL.Exceptions;
-using BL.Services;
-using Common.MCat.Dto;
-using DAL.Models;
+using Domain.Exceptions;
 using FluentValidation;
-using MediatR;
+using MediatR.Cat.Responses;
+using MediatR.Services;
 using Microsoft.Extensions.Logging;
+using Models = Domain.Models;
 
-namespace Common.MCat
+namespace MediatR.MCat
 {
     public class GetByIdCat
     {
-        public class Request : IRequest<GetByIdCatDto>
+        public class Request : IRequest<GetByIdCatResponse>
         {
             public long Id { get; set; }
         }
@@ -24,7 +23,7 @@ namespace Common.MCat
             }
         }
 
-        public class Handler : IRequestHandler<Request, GetByIdCatDto>
+        public class Handler : IRequestHandler<Request, GetByIdCatResponse>
         {
             private readonly ILogger<GetByIdCat> _logger;
             private readonly ICatService _service;
@@ -37,7 +36,7 @@ namespace Common.MCat
                 _mapper = mapper;
             }
 
-            public async Task<GetByIdCatDto> Handle(Request request, CancellationToken cancellationToken)
+            public async Task<GetByIdCatResponse> Handle(Request request, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -48,7 +47,7 @@ namespace Common.MCat
                     {
                         throw new AppException($"Not found Cat id={request.Id}");
                     }
-                    return _mapper.Map<Cat, GetByIdCatDto>(entity);
+                    return _mapper.Map<Models.Cat, GetByIdCatResponse>(entity);
                 }
                 catch (Exception e)
                 {

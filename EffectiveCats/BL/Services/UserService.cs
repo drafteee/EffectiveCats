@@ -3,14 +3,13 @@ using Infrastructure.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure;
-using BL.Interfaces;
-using DAL.Interfaces.Finder;
-using DAL.Interfaces.Repositories;
-using DAL.Interfaces;
-using DAL.Models.Account;
-using BL.Exceptions;
+using MediatR.Interfaces;
+using Domain.Models.Account;
+using BL.Repository;
+using Domain.Exceptions;
+using BL.Finders;
 
-namespace Domain.Services
+namespace BL.Services
 {
     public class UserService : IUserService
     {

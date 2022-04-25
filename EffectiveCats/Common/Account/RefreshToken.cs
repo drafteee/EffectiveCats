@@ -1,10 +1,9 @@
-﻿using BL.Interfaces;
-using DAL.Models.Account;
+﻿using Domain.Models.Account;
 using Infrastructure;
-using MediatR;
+using MediatR.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Common.Account
+namespace MediatR.Account
 {
     public class RefreshToken
     {

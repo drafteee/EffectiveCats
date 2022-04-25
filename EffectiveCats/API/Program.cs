@@ -3,7 +3,8 @@ using MediatR;
 using FluentValidation.AspNetCore;
 using EffectiveCats.Middlewares;
 using EffectiveCats.Extensions;
-using DAL.Repositories;
+using API.Behaviors;
+using SQLiteDAL.Repositories;
 
 var assembly = AppDomain.CurrentDomain.Load("Common");
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<MainContext>(options => options.UseSqlite(builder.
 builder.Services.AddControllers();
 
 builder.Services.AddMediatR(assembly)
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>))
                 .AddAutoMapper(assembly)
                 .AddServices()
                 .AddAuthenticationJWT(builder.Configuration);

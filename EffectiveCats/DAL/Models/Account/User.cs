@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace DAL.Models.Account
+namespace Domain.Models.Account
 {
     public class User : IdentityUser<long>, Interfaces.IId<long>
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DAL.Models
+namespace Domain.Models
 {
     public class BaseEntity<T> : Interfaces.IId<T>
         where T : struct

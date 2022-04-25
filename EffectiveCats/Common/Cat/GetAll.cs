@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
-using BL.Services;
-using Common.MCat.Dto;
-using DAL.Models;
-using MediatR;
+using MediatR.Cat.Responses;
+using MediatR.Services;
 using Microsoft.Extensions.Logging;
+using Models = Domain.Models;
 
-namespace Common.MCat
+namespace MediatR.MCat
 {
     public class GetAllCat
     {
-        public class Request : IRequest<List<GetAllCatDto>> { }
+        public class Request : IRequest<List<GetAllCatResponse>> { }
 
-        public class Handler: IRequestHandler<Request, List<GetAllCatDto>>
+        public class Handler: IRequestHandler<Request, List<GetAllCatResponse>>
         {
             private readonly ILogger<GetAllCat> _logger;
             private readonly IMapper _mapper;
@@ -24,13 +23,13 @@ namespace Common.MCat
                 _service = service;
             }
 
-            public async Task<List<GetAllCatDto>> Handle(Request request, CancellationToken cancellationToken)
+            public async Task<List<GetAllCatResponse>> Handle(Request request, CancellationToken cancellationToken)
             {
                 try
                 {
                     _logger.LogInformation($"ReadAllM Cat [{DateTime.Now}]");
                     var list = await _service.GetAll();
-                    return _mapper.Map<List<Cat>, List<GetAllCatDto>>(list);
+                    return _mapper.Map<List<Models.Cat>, List<GetAllCatResponse>>(list);
                 }
                 catch (Exception e)
                 {

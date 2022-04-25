@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DAL.Models.Account
+namespace Domain.Models.Account
 {
     public class AuthenticateResponse
     {

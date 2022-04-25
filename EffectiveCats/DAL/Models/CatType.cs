@@ -1,4 +1,4 @@
-﻿namespace DAL.Models
+﻿namespace Domain.Models
 {
     public class CatType : BaseEntity<long>
     {

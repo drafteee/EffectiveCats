@@ -1,16 +1,13 @@
-﻿using BL.Interfaces;
+﻿using BL.Finders;
+using BL.Repository;
 using BL.Services;
-using DAL.Interfaces;
-using DAL.Interfaces.Finder;
-using DAL.Interfaces.Finders;
-using DAL.Interfaces.Repositories;
-using DAL.Models;
-using DAL.Models.Account;
-using DAL.Repositories;
-using Domain.Finders;
-using Domain.Services;
+using Domain.Models;
+using Domain.Models.Account;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using MediatR.Interfaces;
+using MediatR.Services;
+using SQLiteDAL.Finders;
+using SQLiteDAL.Repositories;
 
 namespace EffectiveCats.Extensions
 {
@@ -21,7 +18,7 @@ namespace EffectiveCats.Extensions
                     .AddScoped<IUnitOfWork, UnitOfWork>()
 
                     .AddScoped(x=> x.GetRequiredService<MainContext>().Cats)
-                    .AddScoped(x=> x.GetRequiredService<MainContext>().Cats)
+                    .AddScoped(x=> x.GetRequiredService<MainContext>().CatTypes)
 
 
 

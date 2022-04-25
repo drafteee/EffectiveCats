@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using BL.Services;
-using DAL.Models;
 using FluentValidation;
-using MediatR;
+using MediatR.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Models = Domain.Models;
 
-namespace Common.MCat
+namespace MediatR.MCat
 {
     public class CreateCat 
     {
@@ -45,7 +44,7 @@ namespace Common.MCat
                 {
                     _logger.LogInformation($"CreateM Cat [{DateTime.Now}]");
 
-                    var entity = _mapper.Map<Command, Cat>(command);
+                    var entity = _mapper.Map<Command, Models.Cat>(command);
                     await _service.Create(entity);
                     return entity.Id;
                 }

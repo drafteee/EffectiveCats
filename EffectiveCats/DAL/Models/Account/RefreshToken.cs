@@ -1,4 +1,4 @@
-﻿namespace DAL.Models.Account
+﻿namespace Domain.Models.Account
 {
     public class RefreshToken : BaseEntity<long>
     {

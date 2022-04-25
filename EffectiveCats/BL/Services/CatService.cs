@@ -1,10 +1,10 @@
-﻿using BL.Exceptions;
-using BL.Services;
-using DAL.Interfaces;
-using DAL.Interfaces.Finders;
-using DAL.Models;
+﻿using BL.Finders;
+using BL.Repository;
+using Domain.Exceptions;
+using Domain.Models;
+using MediatR.Services;
 
-namespace Domain.Services
+namespace BL.Services
 {
     public class CatService : ICatService
     {

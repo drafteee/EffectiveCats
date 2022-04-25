@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
-using BL.Exceptions;
-using DAL.Models.Account;
+using Domain.Exceptions;
+using Domain.Models.Account;
 using FluentValidation;
-using Infrastructure;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Common.Account
+namespace MediatR.Account
 {
     public class Register
     {
@@ -33,7 +31,6 @@ namespace Common.Account
             private readonly IMapper _mapper;
             private readonly ILogger<Register> _logger;
             private readonly UserManager<User> _userManager;
-
 
             public Handler(ILogger<Register> logger, IMapper mapper, UserManager<User> userManager)
             {

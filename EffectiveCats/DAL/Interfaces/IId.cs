@@ -1,4 +1,4 @@
-﻿namespace DAL.Interfaces
+﻿namespace Domain.Interfaces
 {
     public interface IId<T>
     {

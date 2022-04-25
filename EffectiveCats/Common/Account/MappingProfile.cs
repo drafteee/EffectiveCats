@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using DAL.Models.Account;
+using Domain.Models.Account;
 
-namespace Common.Account
+namespace MediatR.Account
 {
     public class MappingProfile : Profile
     {

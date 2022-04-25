@@ -1,8 +1,8 @@
-﻿using Common.Account;
-using DAL.Models.Account;
+﻿using MediatR.Account;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Models.Account;
 
 namespace EffectiveCats.Controllers
 {
@@ -26,7 +26,7 @@ namespace EffectiveCats.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public ActionResult<Task<AuthenticateResponse>> RefreshToken(Common.Account.RefreshToken.Command command)
+        public ActionResult<Task<AuthenticateResponse>> RefreshToken(MediatR.Account.RefreshToken.Command command)
         {
             return _mediator.Send(command);
         }

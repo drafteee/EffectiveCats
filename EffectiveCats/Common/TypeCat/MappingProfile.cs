@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using Common.MTypeCat.Dto;
-using DAL.Models;
+using Domain.Models;
+using MediatR.TypeCat.Responses;
 
-namespace Common.MTypeCat
+namespace MediatR.MTypeCat
 {
     class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<CatType, GetByIdTypeCatDto>();
-            CreateMap<CatType, GetAllTypeCatDto>();
+            CreateMap<CatType, GetByIdTypeCatResponse>();
+            CreateMap<CatType, GetAllTypeCatResponse>();
             CreateMap<CreateCatType.Command, CatType>();
             CreateMap<UpdateCatType.Command, CatType>();
         }

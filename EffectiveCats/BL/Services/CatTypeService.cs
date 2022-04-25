@@ -1,7 +1,8 @@
-﻿using BL.Exceptions;
-using DAL.Interfaces;
-using DAL.Interfaces.Finders;
-using DAL.Models;
+﻿using BL.Finders;
+using BL.Repository;
+using Domain.Exceptions;
+using Domain.Models;
+using MediatR.Services;
 
 namespace BL.Services
 {

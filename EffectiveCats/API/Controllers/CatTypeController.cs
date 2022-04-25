@@ -1,9 +1,8 @@
-﻿using Common.MTypeCat;
-using Common.MTypeCat.Dto;
-using DAL.Models;
+﻿using MediatR.TypeCat.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MediatR.MTypeCat;
 
 namespace EffectiveCats.Controllers
 {
@@ -25,13 +24,13 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpGet("getById")]
-        public ActionResult<Task<GetByIdTypeCatDto>> GetById([FromQuery] GetByIdCatType.Request request)
+        public ActionResult<Task<GetByIdTypeCatResponse>> GetById([FromQuery] GetByIdCatType.Request request)
         {
             return _mediator.Send(request);
         }
 
         [HttpGet("getAll")]
-        public ActionResult<Task<List<GetAllTypeCatDto>>> GetAll([FromQuery] GetAllCatType.Request request)
+        public ActionResult<Task<List<GetAllTypeCatResponse>>> GetAll([FromQuery] GetAllCatType.Request request)
         {
             return _mediator.Send(request);
         }

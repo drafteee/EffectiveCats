@@ -1,11 +1,11 @@
-﻿using DAL.Models.Account;
-using DAL.Repositories;
+﻿using Domain.Models.Account;
 using Infrastructure;
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using SQLiteDAL.Repositories;
 using System.Text;
 
 namespace EffectiveCats.Extensions

@@ -1,5 +1,5 @@
-﻿using Common.MCat;
-using Common.MCat.Dto;
+﻿using MediatR.MCat;
+using MediatR.Cat.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +24,13 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpGet("getById")]
-        public ActionResult<Task<GetByIdCatDto>> GetById([FromQuery] GetByIdCat.Request request)
+        public ActionResult<Task<GetByIdCatResponse>> GetById([FromQuery] GetByIdCat.Request request)
         {
             return _mediator.Send(request);
         }
 
         [HttpGet("getAll")]
-        public ActionResult<Task<List<GetAllCatDto>>> GetAll([FromQuery] GetAllCat.Request request)
+        public ActionResult<Task<List<GetAllCatResponse>>> GetAll([FromQuery] GetAllCat.Request request)
         {
             return _mediator.Send(request);
         }

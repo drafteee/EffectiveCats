@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using BL.Services;
-using DAL.Models;
-using MediatR;
+using Domain.Models;
+using MediatR.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Common.MTypeCat
+namespace MediatR.MTypeCat
 {
     public class UpdateCatType
     {
