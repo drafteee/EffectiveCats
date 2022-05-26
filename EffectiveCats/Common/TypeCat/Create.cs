@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Models;
+using Domain.Entities;
 using FluentValidation;
 using MediatR.Services;
 using Microsoft.Extensions.Logging;

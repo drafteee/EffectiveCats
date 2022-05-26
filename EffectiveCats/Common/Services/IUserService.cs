@@ -1,4 +1,4 @@
-﻿using Domain.Models.Account;
+﻿using MediatR.Models;
 
 namespace MediatR.Interfaces
 {

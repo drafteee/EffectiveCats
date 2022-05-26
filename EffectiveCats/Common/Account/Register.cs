@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Exceptions;
-using Domain.Models.Account;
+using Domain.Entities.Account;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -47,14 +46,14 @@ namespace MediatR.Account
 
                     var userExists = await _userManager.FindByNameAsync(command.UserName);
                     if (userExists != null)
-                        throw new AppException("User already exists!");
+                        throw new ApplicationException("User already exists!");
 
                     var entity = _mapper.Map<Command, User>(command);
 
                     var result = await _userManager.CreateAsync(entity, command.Password);
 
                     if (!result.Succeeded)
-                        throw new AppException("User creation failed! Please check user details and try again.");
+                        throw new ApplicationException("User creation failed! Please check user details and try again.");
 
                     return true;
                 }

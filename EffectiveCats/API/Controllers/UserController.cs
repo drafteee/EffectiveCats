@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Models.Account;
+using MediatR.Models;
 
 namespace EffectiveCats.Controllers
 {

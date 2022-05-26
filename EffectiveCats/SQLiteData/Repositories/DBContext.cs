@@ -1,14 +1,11 @@
-﻿using Domain.Models;
-using Domain.Models.Account;
+﻿using Domain.Entities;
+using Domain.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SQLiteDAL.Repositories
 {
-    /// <summary>
-    /// TODO: Add Identity
-    /// </summary>
     public class MainContext : IdentityDbContext<
         User,
         IdentityRole<long>,
@@ -31,7 +28,6 @@ namespace SQLiteDAL.Repositories
         {
             optionsBuilder.UseLazyLoadingProxies();
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

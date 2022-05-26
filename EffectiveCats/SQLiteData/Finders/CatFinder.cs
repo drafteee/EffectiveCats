@@ -1,5 +1,5 @@
 ﻿using BL.Finders;
-using Domain.Models;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using SQLiteDAL.Repositories;
 

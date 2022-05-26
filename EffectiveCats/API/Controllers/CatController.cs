@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EffectiveCats.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class CatController : ControllerBase
     {
         private IMediator _mediator;
@@ -23,6 +23,16 @@ namespace EffectiveCats.Controllers
             return _mediator.Send(command);
         }
 
+        /// <summary>
+        ///     Logins.
+        /// </summary>
+        /// <param name="request">Model as a <see cref="LoginRequest" />.</param>
+        /// <response code="200">Logged in successfully.</response>
+        /// <response code="400">Bad Request.</response>
+        /// <response code="401">Unauthorized.</response>
+        /// <response code="403">User is not registered in the system.</response>
+        /// <example>POST: .auth/login</example>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetByIdCatResponse))]
         [HttpGet("getById")]
         public ActionResult<Task<GetByIdCatResponse>> GetById([FromQuery] GetByIdCat.Request request)
         {
@@ -30,9 +40,9 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpGet("getAll")]
-        public ActionResult<Task<List<GetAllCatResponse>>> GetAll([FromQuery] GetAllCat.Request request)
+        public async Task<ActionResult<List<GetAllCatResponse>>> GetAll([FromQuery] GetAllCat.Request request)
         {
-            return _mediator.Send(request);
+            return await _mediator.Send(request);
         }
 
         [HttpPut("update")]
@@ -42,7 +52,7 @@ namespace EffectiveCats.Controllers
         }
 
         [HttpDelete("delete")]
-        public ActionResult<Task<bool>> Delete([FromQuery] DeleteCat.Command command)
+        public ActionResult<Task> Delete([FromQuery] DeleteCat.Command command)
         {
             return _mediator.Send(command);
         }

@@ -6,7 +6,7 @@ namespace MediatR.MCat
 {
     public class DeleteCat
     {
-        public class Command : IRequest<bool>
+        public class Command : IRequest
         {
             public long Id { get ; set ; }
         }
@@ -19,7 +19,7 @@ namespace MediatR.MCat
             }
         }
 
-        public class Handler : IRequestHandler<Command, bool>
+        public class Handler : IRequestHandler<Command>
         {
             private readonly ICatService _service;
             private readonly ILogger<DeleteCat> _logger;
@@ -30,13 +30,15 @@ namespace MediatR.MCat
                 _service = service;
             }
 
-            public async Task<bool> Handle(Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 try
                 {
                     _logger.LogInformation($"DeleteM Cat [{DateTime.Now}]");
 
-                    return (await _service.Delete(command.Id)) > 0;
+                    await _service.Delete(command.Id);
+
+                    return Unit.Value;
                 }
                 catch (Exception e)
                 {

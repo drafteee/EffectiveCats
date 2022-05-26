@@ -1,5 +1,5 @@
-﻿using Domain.Models;
-using Domain.Models.Account;
+﻿using Domain.Entities;
+using Domain.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 
 namespace SQLiteDAL.Repositories

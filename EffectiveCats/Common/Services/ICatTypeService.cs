@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿
+using MediatRL.Models;
+using Domain.Entities;
 
 namespace MediatR.Services
 {

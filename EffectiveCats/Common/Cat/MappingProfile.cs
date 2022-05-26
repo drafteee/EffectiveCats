@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR.Cat.Responses;
-using Models = Domain.Models;
 
 namespace MediatR.MCat
 {
@@ -8,9 +7,9 @@ namespace MediatR.MCat
     {
         public MappingProfile()
         {
-            CreateMap<Models.Cat, GetByIdCatResponse>();
-            CreateMap<Models.Cat, GetAllCatResponse>();
-            CreateMap<UpdateCat.Command, Models.Cat>()
+            CreateMap<Domain.Entities.Cat, GetByIdCatResponse>();
+            CreateMap<Domain.Entities.Cat, GetAllCatResponse>();
+            CreateMap<UpdateCat.Command, Domain.Entities.Cat>()
                 .ForMember(d => d.Image, opt => opt.MapFrom((source, dest) => {
                     var stream = new MemoryStream();
                     if (source.Image != null)
@@ -20,7 +19,7 @@ namespace MediatR.MCat
                     }
                     return null;
                 }));
-            CreateMap<CreateCat.Command, Models.Cat>()
+            CreateMap<CreateCat.Command, Domain.Entities.Cat>()
                 .ForMember(d => d.Image, opt => opt.MapFrom((source, dest) => {
                     var stream = new MemoryStream();
                     source.Image.CopyTo(stream);

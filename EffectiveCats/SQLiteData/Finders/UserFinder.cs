@@ -1,5 +1,5 @@
 ﻿using BL.Finders;
-using Domain.Models.Account;
+using Domain.Entities.Account;
 using Microsoft.EntityFrameworkCore;
 using SQLiteDAL.Repositories;
 

@@ -1,4 +1,4 @@
-﻿using Domain.Models.Account;
+﻿using Domain.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 using SQLiteDAL.Repositories;
 

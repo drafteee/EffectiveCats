@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using Domain.Exceptions;
-using Domain.Models;
 using MediatR.Services;
 using MediatR.TypeCat.Responses;
+using Domain.Entities;
 
 namespace MediatR.MTypeCat
 {
@@ -45,7 +44,7 @@ namespace MediatR.MTypeCat
                     var entity = await _service.Get(request.Id);
                     if(entity == null)
                     {
-                        throw new AppException($"Not found CatType id={request.Id}");
+                        throw new ApplicationException($"Not found CatType id={request.Id}");
                     }
                     return _mapper.Map<CatType, GetByIdTypeCatResponse>(entity);
                 }

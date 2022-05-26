@@ -1,8 +1,8 @@
 ﻿using BL.Finders;
 using BL.Repository;
 using BL.Services;
-using Domain.Models;
-using Domain.Models.Account;
+using Domain.Entities;
+using Domain.Entities.Account;
 using Infrastructure;
 using MediatR.Interfaces;
 using MediatR.Services;
@@ -20,8 +20,6 @@ namespace EffectiveCats.Extensions
                     .AddScoped(x=> x.GetRequiredService<MainContext>().Cats)
                     .AddScoped(x=> x.GetRequiredService<MainContext>().CatTypes)
 
-
-
                     .AddScoped<ICatFinder, CatFinder>()
                     .AddScoped<ICatTypeFinder, CatTypeFinder>()
                     .AddScoped<IUserFinder, UserFinder>()
@@ -32,7 +30,7 @@ namespace EffectiveCats.Extensions
 
                     .AddScoped<ICatService, CatService>()
                     .AddScoped<ICatTypeService, CatTypeService>()
-                    .AddScoped<IUserService, UserService>()
+                    .AddScoped<IUserService, AuthService>()
                     .AddScoped<UserAccessor>();
         
     }

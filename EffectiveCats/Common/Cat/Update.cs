@@ -2,7 +2,6 @@
 using MediatR.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Models = Domain.Models;
 
 namespace MediatR.MCat
 {
@@ -36,7 +35,7 @@ namespace MediatR.MCat
                 {
                     _logger.LogInformation($"UpdateM Cat [{DateTime.Now}]");
 
-                    var entity = _mapper.Map<Command, Models.Cat>(command);
+                    var entity = _mapper.Map<Command, Domain.Entities.Cat>(command);
 
                     return (await _service.Update(entity)) > 0;
                 }

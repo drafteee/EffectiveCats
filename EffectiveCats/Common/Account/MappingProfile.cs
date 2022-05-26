@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Models.Account;
+using Domain.Entities.Account;
 
 namespace MediatR.Account
 {

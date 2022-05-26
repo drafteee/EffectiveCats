@@ -1,4 +1,4 @@
-﻿using Domain.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
 
@@ -26,7 +26,7 @@ namespace EffectiveCats.Middlewares
 
                 switch (error)
                 {
-                    case AppException e:
+                    case ApplicationException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case KeyNotFoundException e:

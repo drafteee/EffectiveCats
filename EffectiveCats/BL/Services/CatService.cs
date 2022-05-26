@@ -1,7 +1,6 @@
 ﻿using BL.Finders;
 using BL.Repository;
-using Domain.Exceptions;
-using Domain.Models;
+using Domain.Entities;
 using MediatR.Services;
 
 namespace BL.Services
@@ -25,16 +24,14 @@ namespace BL.Services
             return _unitOfWork.Complete();
         }
 
-        public async Task<int> Delete(long id)
+        public async Task Delete(long id)
         {
             var entity = await _finder.GetById(id);
             if (entity != null)
             {
                 _repository.Delete(entity);
-                return await _unitOfWork.Complete();
+                await _unitOfWork.Complete();
             }
-
-            throw new AppException($"Not found Cat id={id}");
         }
 
         public Task<Cat?> Get(long id)

@@ -1,6 +1,6 @@
-﻿using Domain.Models.Account;
-using Infrastructure;
+﻿using Infrastructure;
 using MediatR.Interfaces;
+using MediatR.Models;
 using Microsoft.Extensions.Logging;
 
 namespace MediatR.Account

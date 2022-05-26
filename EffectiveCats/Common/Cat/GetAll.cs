@@ -2,7 +2,6 @@
 using MediatR.Cat.Responses;
 using MediatR.Services;
 using Microsoft.Extensions.Logging;
-using Models = Domain.Models;
 
 namespace MediatR.MCat
 {
@@ -29,7 +28,7 @@ namespace MediatR.MCat
                 {
                     _logger.LogInformation($"ReadAllM Cat [{DateTime.Now}]");
                     var list = await _service.GetAll();
-                    return _mapper.Map<List<Models.Cat>, List<GetAllCatResponse>>(list);
+                    return _mapper.Map<List<Domain.Entities.Cat>, List<GetAllCatResponse>>(list);
                 }
                 catch (Exception e)
                 {

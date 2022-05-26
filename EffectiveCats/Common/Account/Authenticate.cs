@@ -1,7 +1,7 @@
-﻿using Domain.Models.Account;
-using FluentValidation;
+﻿using FluentValidation;
 using Infrastructure;
 using MediatR.Interfaces;
+using MediatR.Models;
 using Microsoft.Extensions.Logging;
 
 namespace MediatR.Account

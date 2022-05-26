@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using MediatR.TypeCat.Responses;
-using Domain.Models;
 using MediatR.Services;
+using Domain.Entities;
 
 namespace MediatR.MTypeCat
 {

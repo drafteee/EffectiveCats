@@ -1,4 +1,4 @@
-﻿using Domain.Models.Account;
+﻿using Domain.Entities.Account;
 
 namespace BL.Finders
 {

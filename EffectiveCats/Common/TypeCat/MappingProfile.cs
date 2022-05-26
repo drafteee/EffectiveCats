@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Domain.Models;
+using Domain.Entities;
 using MediatR.TypeCat.Responses;
 
 namespace MediatR.MTypeCat

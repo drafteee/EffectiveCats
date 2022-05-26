@@ -1,7 +1,6 @@
 ﻿using BL.Finders;
 using BL.Repository;
-using Domain.Exceptions;
-using Domain.Models;
+using Domain.Entities;
 using MediatR.Services;
 
 namespace BL.Services
@@ -34,7 +33,7 @@ namespace BL.Services
                 return await _unitOfWork.Complete();
             }
 
-            throw new AppException($"Not found CatType id={id}");
+            throw new ApplicationException($"Not found CatType id={id}");
         }
 
         public Task<CatType?> Get(long id)

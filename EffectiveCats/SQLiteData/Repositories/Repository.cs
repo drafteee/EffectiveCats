@@ -24,6 +24,7 @@ namespace SQLiteDAL.Repositories
         {
             _dbContext.Set<T>().Add(entity);
         }
+
         public void AddRange(IEnumerable<T> entities)
         {
             _dbContext.Set<T>().AddRange(entities);

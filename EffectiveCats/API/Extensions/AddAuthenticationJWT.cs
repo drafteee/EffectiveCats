@@ -1,6 +1,5 @@
-﻿using Domain.Models.Account;
+﻿using Domain.Entities.Account;
 using Infrastructure;
-using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

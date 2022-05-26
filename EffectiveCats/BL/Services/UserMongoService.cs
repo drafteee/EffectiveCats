@@ -1,56 +1,71 @@
-﻿using Infrastructure.Interfaces;
-using Infrastructure.Models;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity;
+﻿using BL.Finders;
+using BL.Repositories;
+using Domain.Entities.Account;
+using Domain.Entitties.Account;
 using Infrastructure;
+using Infrastructure.Models;
 using MediatR.Interfaces;
-using Domain.Models.Account;
-using BL.Repository;
-using Domain.Exceptions;
-using BL.Finders;
+using MediatR.Models;
+using MediatRL.Models;
+using Microsoft.Extensions.Options;
 
-namespace BL.Services
+namespace BLL.Services
 {
-    public class UserService : IUserService
+    internal class UserMongoService : IUserService
     {
-        private IUserFinder _finder;
-        private IRepository<User> _repository;
-        private IUnitOfWork _unitOfWork;
+        private IUserMongoFinder _finder;
+        private IUserRepository _repository;
         private IJWTUtils _jwtUtils;
-        private readonly JWTSettings _appSettings;
-        private readonly UserManager<User> _userManager;
-        private readonly UserAccessor _userAccessor;
+        private JWTSettings _appSettings;
+        private UserAccessor _userAccessor;
 
-        public UserService(
-            IUserFinder finder, IRepository<User> repository, IUnitOfWork unitofWork,
+        public UserMongoService(
+            IUserMongoFinder finder, IUserRepository repository,
             IJWTUtils jwtUtils,
             IOptions<JWTSettings> appSettings,
-            UserManager<User> userManager,
             UserAccessor userAccessor)
         {
             _finder = finder;
             _repository = repository;
-            _unitOfWork = unitofWork;
-
             _jwtUtils = jwtUtils;
             _appSettings = appSettings.Value;
-            _userManager = userManager;
             _userAccessor = userAccessor;
+        }
+
+        private string GenerateHash(string password)
+        {
+            return null;
+        }
+
+        private async Task<bool> CheckPassword(UserMongo user, string password) => true;
+
+        public RegisterResponse Register(string userName, string password)
+        {
+            var passwordHash = GenerateHash(password);
+
+            var user = new UserMongo()
+            {
+                PasswordHash = passwordHash,
+                UserName = userName,
+            };
+
+            _repository.Add(user);
+            return new RegisterResponse();
         }
 
         public async Task<AuthenticateResponse> Authenticate(string userName, string password, string ipAddress)
         {
             var user = await _finder.GetByName(userName);
-            
-            if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
-                throw new AppException("Username or password is incorrect");
+
+            if (user == null || !(await CheckPassword(user, password)))
+                throw new UnauthorizedAccessException("Username or password is incorrect");
 
             var jwtToken = _jwtUtils.GenerateJwtToken(user.Id.ToString());
             _userAccessor.SetToken(jwtToken);
 
             var tokenIsUnique = false;
 
-            while(!tokenIsUnique)
+            while (!tokenIsUnique)
                 tokenIsUnique = !_finder.TokenIsUnique(jwtToken);
 
             var refreshTokenString = _jwtUtils.GenerateRefreshToken();
@@ -68,8 +83,7 @@ namespace BL.Services
             RemoveOldRefreshTokens(user);
 
             _repository.Edit(user);
-            _unitOfWork.Complete();
-            return new AuthenticateResponse(user, jwtToken, refreshToken.Token);
+            return new AuthenticateResponse(user.Id, user.UserName, jwtToken, refreshToken.Token);
         }
 
         public async Task<AuthenticateResponse> RefreshToken(long id, string ipAddress)
@@ -90,11 +104,10 @@ namespace BL.Services
             {
                 RevokeDescendantRefreshTokens(refreshToken, user, ipAddress, $"Attempted reuse of revoked ancestor token: {refreshToken.Token}");
                 _repository.Edit(user);
-                _unitOfWork.Complete();
             }
 
             if (!refreshToken.IsActive)
-                throw new AppException("Invalid token");
+                throw new UnauthorizedAccessException("Invalid token");
 
             var newRefreshToken = RotateRefreshToken(refreshToken, ipAddress);
             user.RefreshTokens.Add(newRefreshToken);
@@ -102,11 +115,10 @@ namespace BL.Services
             RemoveOldRefreshTokens(user);
 
             _repository.Edit(user);
-            await _unitOfWork.Complete();
 
             var jwtToken = _jwtUtils.GenerateJwtToken(user.Id.ToString());
             _userAccessor.SetToken(jwtToken);
-            return new AuthenticateResponse(user, jwtToken, newRefreshToken.Token);
+            return new AuthenticateResponse(user.Id, user.UserName, jwtToken, newRefreshToken.Token);
         }
 
         public async Task<bool> RevokeToken(string token, string ipAddress)
@@ -115,21 +127,19 @@ namespace BL.Services
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             if (!refreshToken.IsActive)
-                throw new AppException("Invalid token");
+                throw new UnauthorizedAccessException("Invalid token");
 
             RevokeRefreshToken(refreshToken, ipAddress, "Revoked without replacement");
             _repository.Edit(user);
-            await _unitOfWork.Complete();
             return true;
         }
 
-
-        private async Task<User> GetUserByRefreshToken(string token)
+        private async Task<UserMongo> GetUserByRefreshToken(string token)
         {
             var user = await _finder.GetByRefreshToken(token);
 
             if (user is null)
-                throw new AppException("Invalid token");
+                throw new UnauthorizedAccessException("Invalid token");
 
             return user;
         }
@@ -149,14 +159,14 @@ namespace BL.Services
             return newRefreshToken;
         }
 
-        private void RemoveOldRefreshTokens(User user)
+        private void RemoveOldRefreshTokens(UserMongo user)
         {
             user.RefreshTokens.RemoveAll(x =>
                 !x.IsActive &&
                 x.Created.AddDays(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow);
         }
 
-        private void RevokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string ipAddress, string reason)
+        private void RevokeDescendantRefreshTokens(RefreshToken refreshToken, UserMongo user, string ipAddress, string reason)
         {
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
             {
