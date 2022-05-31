@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Finders
 {
-    internal class ICarRedisFinder
+    internal class ICatRedisFinder
     {
     }
 }
