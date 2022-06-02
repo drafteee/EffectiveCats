@@ -17,6 +17,7 @@ namespace EffectiveCats.Controllers
             _mediator = mediator;
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(long))]
         [HttpPost("create")]
         public ActionResult<Task<long>> Create([FromForm] CreateCat.Command command)
         {

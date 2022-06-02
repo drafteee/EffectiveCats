@@ -35,4 +35,12 @@ IAsyncEnumerable
 19. использовать, если read больше, чем modify
 
 сделать redis кэш
-сделать memory with redisstream(background task)(dictionary обертка вызывавтеся back task)
+сделать memory with redisstream(background task)(dictionary обертка вызывается back task)
+
+вместо memorycache concurrentdictionary
+канал на изменение в кэше, потом бэк отсылает по другому канал изменения, сервис слушает этот канал и меняет dictionary
+
+еще сделать без concurrentdict, через slimlock(read, write)
+
+20. Протестировать кэш
+докер контейнер, 2 инстанса на разных портах, слушаю одну базу, запрашивают данные с кэша, нуэно через docker compose
